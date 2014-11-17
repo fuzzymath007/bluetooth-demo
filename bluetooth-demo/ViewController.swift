@@ -37,23 +37,38 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     }
     
     func startUpCentralManager(){
-        println("Initializing central manager")
-        self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        let startupMessage = "\n Initializing central manager \n"
+        
+        println(startupMessage)
+        
+        devicesLog.text = devicesLog.text .stringByAppendingString(startupMessage)
+        
+        centralManager = CBCentralManager(delegate: self, queue: nil)
         
     }
     
     func startScan(){
-        println("Discovering Devices")
+        let startScanMeassge = "\n Discovering Devices \n"
         
-        self.centralManager.scanForPeripheralsWithServices(nil, options:[CBCentralManagerScanOptionAllowDuplicatesKey : "NO"])
+        println(startScanMeassge)
+        
+        devicesLog.text = devicesLog.text .stringByAppendingString(startScanMeassge)
+        
+        var setting = [CBCentralManagerScanOptionAllowDuplicatesKey:false]
+        
+        centralManager!.scanForPeripheralsWithServices(nil, options: setting)
     }
     
     func centralManager(central: CBCentralManager!, didDiscoverPeripheral peripheral: CBPeripheral!, advertisementData: [NSObject : AnyObject]!, RSSI: NSNumber!) {
-        println("Found IT!")
+        println("\n Found IT! \n")
         
-        self.discoveredPeripheral = peripheral
+        println(peripheral.name)
         
-        self.centralManager.connectPeripheral(peripheral, options: nil)
+        discoveredPeripheral = peripheral
+        
+        centralManager.connectPeripheral(peripheral, options: nil)
+        
+        devicesLog.text = devicesLog.text .stringByAppendingString(peripheral.name)
         
         
     }
@@ -63,34 +78,30 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
 //    }
 
     func centralManagerDidUpdateState(central: CBCentralManager!) {
-        println("CHecking State")
+        println("\n CHecking State \n")
         
         switch(central.state){
         case .PoweredOff:
-            println("Bluetooth is off")
+            println("\n Bluetooth is off \n")
             
         case .PoweredOn:
             bluetoothOn = true
-            println("CoreBluetooth BLE hardware is running")
+            println("\n CoreBluetooth BLE hardware is running \n")
+            devicesLog.text = devicesLog.text .stringByAppendingString("CoreBluetooth BLE hardware is running \n")
             
         case .Resetting:
-            println("CoreBluetooth BLE hardware is resetting")
+            println("\n CoreBluetooth BLE hardware is resetting \n")
             
         case .Unauthorized:
-            println("CoreBluetooth BLE state is unauthorized")
+            println("\n CoreBluetooth BLE state is unauthorized \n")
             
         case .Unknown:
-            println("CoreBluetooth BLE state is unknown");
+            println("\n CoreBluetooth BLE state is unknown \n");
             
         case .Unsupported:
-            println("CoreBluetooth BLE hardware is unsupported on this platform");
+            println("\n CoreBluetooth BLE hardware is unsupported on this platform \n");
         }
-        
 
-        
-        
-        
-        
         
     }
     
